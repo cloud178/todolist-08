@@ -2,7 +2,7 @@ import { beforeEach, expect, test } from 'vitest'
 import type {TasksState} from '../App'
 import {v1} from 'uuid'
 import { CreateTodolistAC, DeleteTodolistAC } from './todolists-reducer'
-import {tasksReducer} from "./tasks-reducer.ts";
+import {ChangeTaskStatusAC, ChangeTaskTitleAC, CreateTaskAC, DeleteTaskAC, tasksReducer} from "./tasks-reducer.ts";
 
 let startState: TasksState = {}
 
@@ -43,4 +43,42 @@ test('property with todolistId should be deleted', () => {
     expect(endState['todolistId2']).not.toBeDefined()
     // or
     expect(endState['todolistId2']).toBeUndefined()
+})
+
+test('task  should be deleted', () => {
+    const endState = tasksReducer(startState, DeleteTaskAC('todolistId2', '3'))
+
+    expect(endState['todolistId2'].length).toBe(2)
+    expect(endState['todolistId2'][0].title).toBe('bread')
+    expect(endState['todolistId2'][1].title).toBe('milk')
+})
+
+test('task should be added', () => {
+    const endState = tasksReducer(startState, CreateTaskAC('todolistId1', 'RTK'))
+
+    expect(endState['todolistId1'].length).toBe(4)
+    expect(endState['todolistId1'][0].title).toBe('RTK')
+    expect(endState['todolistId1'][1].title).toBe('CSS')
+    expect(endState['todolistId1'][2].title).toBe('JS')
+    expect(endState['todolistId1'][3].title).toBe('React')
+})
+
+test('task status should be changed', () => {
+    const endState = tasksReducer(startState, ChangeTaskStatusAC('todolistId1', '2', false))
+
+    expect(Object.keys(endState).length).toBe(2)
+    expect(endState['todolistId1'].length).toBe(3)
+    expect(endState['todolistId2'].length).toBe(3)
+    expect(endState['todolistId1'][1].isDone).toBe(false)
+    expect(endState['todolistId2'][1].isDone).toBe(true)
+})
+
+test('task title should be changed', () => {
+    const endState = tasksReducer(startState, ChangeTaskTitleAC('todolistId1', '2', 'JS/TS'))
+
+    expect(Object.keys(endState).length).toBe(2)
+    expect(endState['todolistId1'].length).toBe(3)
+    expect(endState['todolistId2'].length).toBe(3)
+    expect(endState['todolistId1'][1].title).toBe('JS/TS')
+    expect(endState['todolistId2'][1].title).toBe('milk')
 })

@@ -27,6 +27,7 @@ export const todolistsReducer = (todolists: Todolist[] = initialState, action: A
     }
 }
 
+
 // delete
 export const DeleteTodolistAC = (id: string) => (
     {type: 'delete_todolist', payload: {id: id}} as const
@@ -53,4 +54,3 @@ export const ChangeTodolistFilterAC = (payload: {id: string, filter: FilterValue
     {type: 'change_todolist_filter', payload} as const
 )
 export type ChangeTodolistFilterActionType = ReturnType<typeof ChangeTodolistFilterAC>
-
